@@ -1,4 +1,4 @@
-from pathlib import Path
+import gzip
 
 import pytest
 from Bio import SeqIO
@@ -46,7 +46,7 @@ def test_rejects_mismatched_ids_when_enabled(tmp_path):
     write_fastq(r1, [("read1/1", "ACGT")])
     write_fastq(r2, [("other/2", "TGCA")])
 
-    with pytest.raises(ValueError, match="Mismatched read IDs"):
+    with pytest.raises(ValueError, match="Read ID mismatch"):
         interleave_fastq(r1, r2, out, validate_ids=True)
 
     assert not out.exists()
@@ -60,9 +60,7 @@ def test_supports_gzip_output(tmp_path):
     write_fastq(r2, [("read1/2", "TGCA")])
 
     interleave_fastq(r1, r2, out, validate_ids=True)
-    records = list(SeqIO.parse(str(out), "fastq")) if False else None
 
-    import gzip
     with gzip.open(out, "rt") as handle:
         ids = [record.id for record in SeqIO.parse(handle, "fastq")]
     assert ids == ["read1/1", "read1/2"]
