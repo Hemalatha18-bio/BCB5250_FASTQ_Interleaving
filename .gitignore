@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+
+# Generated FASTQ outputs
+*.fastq
+*.fastq.gz
+!examples/*.fastq
+!examples/*.fastq.gz
